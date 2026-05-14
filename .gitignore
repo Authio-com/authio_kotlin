@@ -6,3 +6,21 @@ build/
 local.properties
 out/
 .kotlin/
+captures/
+.cxx/
+*.hprof
+.gradletasknamecache
+.externalNativeBuild/
+
+# Android Studio caches
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# Local secrets
+*.jks
+*.keystore
+keystore.properties

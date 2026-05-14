@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Library module: the host app supplies its own permissions. We
+         document the ones a typical embedder needs in the README:
+           * INTERNET (always)
+           * No special permission for Credential Manager — passkey UI
+             is system-mediated.
+           * No special permission for Custom Tabs — the system browser
+             handles the OAuth flow. -->
+</manifest>

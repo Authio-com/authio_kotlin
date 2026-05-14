@@ -1,24 +1,18 @@
+// Root build file. Per-module configuration lives in each subproject's
+// build.gradle.kts; this file only carries cross-cutting bits like the
+// shared group/version + a convenience `clean` task.
+
 plugins {
-    kotlin("jvm") version "2.0.0"
-    `maven-publish`
+    // Apply the Kotlin JVM plugin at the root for consistent versioning;
+    // subprojects that need it apply their own block.
 }
 
-group = "com.authio"
-version = "0.1.0-alpha.0"
-
-repositories {
-    mavenCentral()
-    google()
+allprojects {
+    group = "com.authio"
+    version = "0.1.0-alpha.0"
 }
 
-dependencies {
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
-    testImplementation(kotlin("test"))
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+tasks.register<Delete>("cleanAll") {
+    delete(rootProject.layout.buildDirectory)
+    subprojects.forEach { delete(it.layout.buildDirectory) }
 }
