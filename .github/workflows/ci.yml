@@ -38,9 +38,9 @@ jobs:
           java-version: 17
       - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v4
-      - env:
-          AUTHIO_INCLUDE_ANDROID: "true"
-        run: ./gradlew :authio-android:assembleRelease :examples:jetpack-compose:assembleDebug --console=plain
+      # Override gradle.properties (authio.includeAndroid=false by default) so
+      # the :authio-android library + jetpack-compose example are included.
+      - run: ./gradlew :authio-android:assembleRelease :examples:jetpack-compose:assembleDebug --console=plain -Pauthio.includeAndroid=true
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
