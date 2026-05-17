@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.serialization") version "2.0.21"
     `maven-publish`
+    signing
 }
 
 java {
@@ -9,6 +10,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
     withSourcesJar()
+    withJavadocJar()
 }
 
 dependencies {
@@ -45,7 +47,37 @@ publishing {
                         url.set("https://opensource.org/licenses/MIT")
                     }
                 }
+                developers {
+                    developer {
+                        id.set("authio")
+                        name.set("Authio")
+                        email.set("releases@authio.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/tcast/authio_kotlin.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/tcast/authio_kotlin.git")
+                    url.set("https://github.com/tcast/authio_kotlin")
+                }
+                issueManagement {
+                    system.set("GitHub Issues")
+                    url.set("https://github.com/tcast/authio_kotlin/issues")
+                }
             }
         }
+    }
+}
+
+// Sonatype requires signed artifacts on Maven Central. SIGNING_KEY (an
+// ASCII-armored secret key block) and SIGNING_PASSWORD are env vars set
+// by the publish workflow. When they aren't set (local builds, CI sanity
+// checks) we skip signing rather than failing — the publish task still
+// reports the signing requirement when it runs against Sonatype.
+signing {
+    val signingKey = providers.environmentVariable("SIGNING_KEY").orNull
+    val signingPassword = providers.environmentVariable("SIGNING_PASSWORD").orNull
+    if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["maven"])
     }
 }
