@@ -40,7 +40,7 @@ publishing {
             pom {
                 name.set("authio-core")
                 description.set("Authio Kotlin/JVM SDK — passwordless, multi-org auth.")
-                url.set("https://github.com/tcast/authio_kotlin")
+                url.set("https://github.com/authio-com/authio_kotlin")
                 licenses {
                     license {
                         name.set("MIT")
@@ -55,13 +55,13 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/tcast/authio_kotlin.git")
-                    developerConnection.set("scm:git:ssh://git@github.com/tcast/authio_kotlin.git")
-                    url.set("https://github.com/tcast/authio_kotlin")
+                    connection.set("scm:git:https://github.com/authio-com/authio_kotlin.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/authio-com/authio_kotlin.git")
+                    url.set("https://github.com/authio-com/authio_kotlin")
                 }
                 issueManagement {
                     system.set("GitHub Issues")
-                    url.set("https://github.com/tcast/authio_kotlin/issues")
+                    url.set("https://github.com/authio-com/authio_kotlin/issues")
                 }
             }
         }
