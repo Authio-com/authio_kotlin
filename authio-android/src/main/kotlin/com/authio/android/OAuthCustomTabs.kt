@@ -76,7 +76,10 @@ internal class OAuthCustomTabs(private val core: Client) {
         } catch (e: AuthioError) {
             // If the URL has a `state` we recognise, propagate the
             // error to that deferred so the caller's `await()` throws.
-            val state = Client.parseQueryString(url)?.get("state")
+            // `Client.parseQueryString` is `internal` to :authio-core, so
+            // we keep a small in-module parser here rather than widening
+            // the SDK's public API just for one cross-module callsite.
+            val state = parseStateParam(url)
             if (state != null && InFlightOAuthRegistry.fail(state, e)) {
                 return true
             }
@@ -84,6 +87,28 @@ internal class OAuthCustomTabs(private val core: Client) {
         }
         val state = cb.state ?: return false
         return InFlightOAuthRegistry.complete(state, cb.toSession())
+    }
+
+    private companion object {
+        /**
+         * Extract `state` from any OAuth callback URL. Mirrors the
+         * in-core [com.authio.Client.parseQueryString] helper but lives
+         * here so :authio-core can keep its parser `internal`.
+         */
+        fun parseStateParam(url: String): String? {
+            val raw = runCatching { java.net.URI(url) }.getOrNull()?.rawQuery
+                ?: return null
+            if (raw.isEmpty()) return null
+            for (pair in raw.split('&')) {
+                if (pair.isEmpty()) continue
+                val idx = pair.indexOf('=')
+                val name = if (idx < 0) pair else pair.substring(0, idx)
+                if (java.net.URLDecoder.decode(name, Charsets.UTF_8) != "state") continue
+                val value = if (idx < 0) "" else pair.substring(idx + 1)
+                return java.net.URLDecoder.decode(value, Charsets.UTF_8)
+            }
+            return null
+        }
     }
 }
 

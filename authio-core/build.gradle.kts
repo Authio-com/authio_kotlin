@@ -14,9 +14,18 @@ java {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // kotlinx-serialization, coroutines, and okhttp are part of
+    // :authio-core's *public* API surface — Client exposes OkHttpClient
+    // builders, suspend functions, and @Serializable response models in
+    // method signatures, so any downstream module that does
+    // `api(project(":authio-core"))` (e.g. :authio-android) needs to see
+    // them at compile time. `api(...)` declares them as transitively
+    // exported, matching that reality. Marking them `implementation`
+    // hides the symbols and breaks :authio-android:compileReleaseKotlin
+    // with "Cannot access class 'okhttp3.OkHttpClient'".
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    api("com.squareup.okhttp3:okhttp:4.12.0")
 
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
