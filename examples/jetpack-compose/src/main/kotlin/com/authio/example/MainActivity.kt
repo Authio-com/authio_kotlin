@@ -32,6 +32,11 @@ import com.authio.AuthioSession
 import com.authio.MembershipWithOrg
 import com.authio.android.AuthioAndroid
 import com.authio.android.AuthioStorage
+// AGP generates BuildConfig under the Android `namespace`
+// (com.authio.example.compose), not the Kotlin file's package
+// (com.authio.example). Explicit import so MainActivity.kt resolves
+// BuildConfig.AUTHIO_PUBLISHABLE_KEY / AUTHIO_API_URL.
+import com.authio.example.compose.BuildConfig
 import kotlinx.coroutines.launch
 
 private val authio = AuthioAndroid.create(
