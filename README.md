@@ -7,6 +7,10 @@
 
 # authio-kotlin
 
+> Part of **[Authio Lobby](https://authio.com/products/lobby)** —
+> Authio's drop-in passwordless authentication. Learn more at
+> https://authio.com/products/lobby.
+
 Official **Kotlin / Android SDK** for [Authio](https://authio.com) — the
 100% passwordless, multi-org-first auth Platform-as-a-Service.
 
