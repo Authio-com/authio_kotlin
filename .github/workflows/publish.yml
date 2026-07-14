@@ -17,9 +17,7 @@ permissions:
 #   - SIGNING_PASSWORD: passphrase for the key
 #   - SIGNING_KEY_ID : (optional) long-form GPG key id, e.g. "0123ABCD4567EF89"
 #
-# We always run `build` so the tag-push proves the artifact still
-# compiles, and gate the upload step on MAVEN_USERNAME being present so
-# pre-release dry-runs don't fail when secrets aren't wired yet.
+# Release credentials are mandatory; a tag may not succeed without publishing.
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -37,11 +35,15 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70 # v3.5.0
       - run: ./gradlew build
-      - name: Publish to Maven Central
-        if: env.MAVEN_USERNAME != '' && env.SIGNING_KEY != ''
-        run: ./gradlew publishAllPublicationsToSonatypeRepository closeAndReleaseSonatypeStagingRepository
-      - name: Skip publish (no Maven Central credentials)
-        if: env.MAVEN_USERNAME == '' || env.SIGNING_KEY == ''
+      - name: Require Maven publish credentials
         run: |
-          echo "::notice::MAVEN_USERNAME or SIGNING_KEY not set; skipping publish step."
-          echo "Wire OSSRH + signing creds per the integrations playbook §6c, then re-tag to release."
+          missing=0
+          for name in MAVEN_USERNAME MAVEN_PASSWORD SIGNING_KEY SIGNING_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is required for a release tag"
+              missing=1
+            fi
+          done
+          exit "$missing"
+      - name: Publish to Maven Central
+        run: ./gradlew publishAllPublicationsToSonatypeRepository closeAndReleaseSonatypeStagingRepository
