@@ -15,6 +15,15 @@ plugins {
 allprojects {
     group = "io.authio"
     version = "0.1.0"
+
+    // Lock every resolvable configuration to the versions recorded in each
+    // project's gradle.lockfile. Regenerate after changing a dependency:
+    //   ./gradlew :authio-core:dependencies :authio-android:dependencies \
+    //     :examples:jetpack-compose:dependencies --write-locks \
+    //     -Pauthio.includeAndroid=true
+    dependencyLocking {
+        lockAllConfigurations()
+    }
 }
 
 // Sonatype OSSRH (Maven Central) staging endpoint configuration. The
